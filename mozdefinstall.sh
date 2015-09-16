@@ -1,24 +1,34 @@
 # Rabbit MQ
 sudo apt-get install -q -y rabbitmq-server
-rabbitmq-plugins enable rabbitmq_management
+sudo rabbitmq-plugins enable rabbitmq_management
 
 # MongoDB
 sudo apt-get install -q -y mongodb
 
 # Nodejs and NPM
+curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
 sudo apt-get install -q -y nodejs npm
 
 # Nginx
 sudo apt-get install -q -y nginx-full
-## Copy nginx.conf file
+## Copy nginx.conf file : Will be copied once the mozdef repository is cloned
+# sudo cp conf/nginx.conf /etc/nginx/nginx.conf
 
 # MozDef
 sudo apt-get install -q -y python2.7-dev python-pip curl supervisor wget libmysqlclient-dev
 sudo pip install -U pip
 
+cd /opt/
+git clone git@github.com:jeffbryner/MozDef.git
+sudo chmod -R 755 MozDef
+cd MozDef
+sudo pip install virtualenvwrapper
+mkvirtualenv mozdef
+pip install -r requirements.txt
+pip install uwsgi celery
+
 # Clone repo into /opt/MozDef
 # pip install -r requirements (of Mozdef) into virtualenv
-# pip install uwsgi celery
 
 # Use sudo here
 mkdir /var/log/mozdef \
