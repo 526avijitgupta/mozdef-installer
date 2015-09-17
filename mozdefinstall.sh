@@ -1,3 +1,8 @@
+# Cloning into /opt/ (Will require root permission to clone)
+cd /opt/
+git clone git@github.com:jeffbryner/MozDef.git
+sudo chmod -R 755 MozDef
+
 # Rabbit MQ
 sudo apt-get install -q -y rabbitmq-server
 sudo rabbitmq-plugins enable rabbitmq_management
@@ -11,19 +16,18 @@ sudo apt-get install -q -y nodejs npm
 
 # Nginx
 sudo apt-get install -q -y nginx-full
-## Copy nginx.conf file : Will be copied once the mozdef repository is cloned
 # sudo cp conf/nginx.conf /etc/nginx/nginx.conf
 
 # MozDef
 sudo apt-get install -q -y python2.7-dev python-pip curl supervisor wget libmysqlclient-dev
 sudo pip install -U pip
 
-cd /opt/
-git clone git@github.com:jeffbryner/MozDef.git
-sudo chmod -R 755 MozDef
-cd MozDef
-sudo pip install virtualenvwrapper
-mkvirtualenv mozdef
+cd /opt/MozDef
+##
+## Use source ~/envs/mozdef/bin/activate (With the exact path)
+##
+#sudo pip install virtualenvwrapper
+#mkvirtualenv mozdef
 pip install -r requirements.txt
 pip install uwsgi celery
 
@@ -31,10 +35,10 @@ pip install uwsgi celery
 # pip install -r requirements (of Mozdef) into virtualenv
 
 # Use sudo here
-mkdir /var/log/mozdef \
-mkdir -p /run/uwsgi/apps/ \
-touch /run/uwsgi/apps/loginput.socket && chmod 666 /run/uwsgi/apps/loginput.socket \
-touch /run/uwsgi/apps/rest.socket && chmod 666 /run/uwsgi/apps/rest.socket \
+mkdir /var/log/mozdef
+mkdir -p /run/uwsgi/apps/
+touch /run/uwsgi/apps/loginput.socket && chmod 666 /run/uwsgi/apps/loginput.socket
+touch /run/uwsgi/apps/rest.socket && chmod 666 /run/uwsgi/apps/rest.socket
 
 # Rewrite the below line, special care to be taken
 mkdir -p /home/mozdef/envs/mozdef/bot/ && cd /home/mozdef/envs/mozdef/bot/
