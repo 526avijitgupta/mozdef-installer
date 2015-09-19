@@ -71,6 +71,9 @@ npm install -g meteorite
 ln -s /usr/bin/nodejs /usr/bin/node
 cd /opt/MozDef/meteor
 
+#======================================================#
+# THE BELOW SHOULD BE IN A DIFFERENT SHELL SCRIPT      #
+#======================================================#
 
 #
 # For Starting the services
