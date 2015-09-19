@@ -1,8 +1,7 @@
+MOZ_PATH=/opt/MozDef
+
 # Cloning into /opt/
-cd /opt/
-sudo git clone git@github.com:jeffbryner/MozDef.git
-sudo chmod -R 755 MozDef
-cd /opt/MozDef/
+git clone git@github.com:jeffbryner/MozDef.git $MOZ_PATH
 
 # Rabbit MQ
 sudo apt-get install -y rabbitmq-server
@@ -17,19 +16,17 @@ sudo apt-get install -y nodejs npm
 
 # Nginx
 sudo apt-get install -y nginx-full
-sudo cp docker/conf/nginx.conf /etc/nginx/nginx.conf
+sudo cp /opt/MozDef/docker/conf/nginx.conf /etc/nginx/nginx.conf
 
 # MozDef
 sudo apt-get install -y python2.7-dev python-pip curl supervisor wget libmysqlclient-dev
 sudo pip install -U pip
 
-##
-## Use source ~/envs/mozdef/bin/activate (With the exact path)
-##
-# sudo pip install virtualenvwrapper
-# mkvirtualenv mozdef
-pip install -r requirements.txt
-pip install uwsgi celery
+# Below may have to be installed globally
+sudo pip install uwsgi celery virtualenv
+PATH_TO_VENV=$HOME/.mozdef_env
+# Creating a virtualenv here
+virtualenv $PATH_TO_VENV
 
 sudo mkdir /var/log/mozdef
 sudo mkdir -p /run/uwsgi/apps/
@@ -37,29 +34,32 @@ sudo touch /run/uwsgi/apps/loginput.socket && sudo chmod 666 /run/uwsgi/apps/log
 sudo touch /run/uwsgi/apps/rest.socket && sudo chmod 666 /run/uwsgi/apps/rest.socket
 
 # Rewrite the below line, special care to be taken
-mkdir -p /home/mozdef/envs/mozdef/bot/ && cd /home/mozdef/envs/mozdef/bot/
+mkdir -p $PATH_TO_VENV/bot/ && cd $PATH_TO_VENV/bot/
 
-# Where to put it ? What does it do ?
+# Where to put it ? What does it do ? Currently goes to $PATH_TO_VENV/bot --- Explicit path to be defined
 wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && gzip -d GeoLiteCity.dat.gz
 
+# Copying config files
 
-cd /opt/MozDef/
-sudo cp docker/conf/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-sudo cp docker/conf/settings.js /opt/MozDef/meteor/app/lib/settings.js
-sudo cp docker/conf/config.py /opt/MozDef/alerts/lib/config.py
-sudo cp docker/conf/sampleData2MozDef.conf /opt/MozDef/examples/demo/sampleData2MozDef.conf
-sudo cp docker/conf/mozdef.localloginenabled.css /opt/MozDef/meteor/public/css/mozdef.css
+#### Do we need to do this ??
+sudo cp $MOZ_PATH/docker/conf/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+####
+
+sudo cp $MOZ_PATH/docker/conf/settings.js $MOZ_PATH/meteor/app/lib/settings.js
+sudo cp $MOZ_PATH/docker/conf/config.py $MOZ_PATH/alerts/lib/config.py
+sudo cp $MOZ_PATH/docker/conf/sampleData2MozDef.conf $MOZ_PATH/examples/demo/sampleData2MozDef.conf
+sudo cp $MOZ_PATH/docker/conf/mozdef.localloginenabled.css $MOZ_PATH/meteor/public/css/mozdef.css
 
 # Install elasticsearch
-cd /tmp/
-curl -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.tar.gz | tar -C /opt -xz
-cd /opt/
-sudo cp docker/conf/elasticsearch.yml /opt/elasticsearch-1.3.2/config/
+# Instead of copying conf, lets see if its needed
+# sudo cp docker/conf/elasticsearch.yml /opt/elasticsearch-1.3.2/config/
+# ElasticSearch to be installed by a different shell script
 
 # Install Kibana
 cd /tmp/
 curl -L https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz | tar -C /opt -xz
 cd /opt/
+## Instead of downloading: How about copying from a to b
 sudo wget https://raw.githubusercontent.com/jeffbryner/MozDef/master/examples/kibana/dashboards/alert.js
 sudo wget https://raw.githubusercontent.com/jeffbryner/MozDef/master/examples/kibana/dashboards/event.js
 sudo cp alert.js /opt/kibana/app/dashboards/alert.js
@@ -85,6 +85,9 @@ sudo service elasticsearch start
 # Nginx
 sudo service nginx start
 
+##
+## NEED TO ADD THE VIRTUALENV PATH: -H /path/to/virtualenv
+##
 # Loginput
 cd /opt/MozDef/loginput
 sudo /usr/local/bin/uwsgi --socket /run/uwsgi/apps/loginput.socket --wsgi-file index.py --buffer-size 32768 --master --listen 100 --uid root --pp /opt/MozDef/loginput --chmod-socket --logto /var/log/mozdef/uwsgi.loginput.log
