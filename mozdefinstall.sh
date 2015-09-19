@@ -1,44 +1,40 @@
-# Cloning into /opt/ (Will require root permission to clone)
+# Cloning into /opt/
 cd /opt/
-git clone git@github.com:jeffbryner/MozDef.git
+sudo git clone git@github.com:jeffbryner/MozDef.git
 sudo chmod -R 755 MozDef
+cd /opt/MozDef/
 
 # Rabbit MQ
-sudo apt-get install -q -y rabbitmq-server
+sudo apt-get install -y rabbitmq-server
 sudo rabbitmq-plugins enable rabbitmq_management
 
 # MongoDB
-sudo apt-get install -q -y mongodb
+sudo apt-get install -y mongodb
 
 # Nodejs and NPM
 curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-sudo apt-get install -q -y nodejs npm
+sudo apt-get install -y nodejs npm
 
 # Nginx
-sudo apt-get install -q -y nginx-full
-# sudo cp conf/nginx.conf /etc/nginx/nginx.conf
+sudo apt-get install -y nginx-full
+sudo cp docker/conf/nginx.conf /etc/nginx/nginx.conf
 
 # MozDef
-sudo apt-get install -q -y python2.7-dev python-pip curl supervisor wget libmysqlclient-dev
+sudo apt-get install -y python2.7-dev python-pip curl supervisor wget libmysqlclient-dev
 sudo pip install -U pip
 
-cd /opt/MozDef
 ##
 ## Use source ~/envs/mozdef/bin/activate (With the exact path)
 ##
-#sudo pip install virtualenvwrapper
-#mkvirtualenv mozdef
+# sudo pip install virtualenvwrapper
+# mkvirtualenv mozdef
 pip install -r requirements.txt
 pip install uwsgi celery
 
-# Clone repo into /opt/MozDef
-# pip install -r requirements (of Mozdef) into virtualenv
-
-# Use sudo here
-mkdir /var/log/mozdef
-mkdir -p /run/uwsgi/apps/
-touch /run/uwsgi/apps/loginput.socket && chmod 666 /run/uwsgi/apps/loginput.socket
-touch /run/uwsgi/apps/rest.socket && chmod 666 /run/uwsgi/apps/rest.socket
+sudo mkdir /var/log/mozdef
+sudo mkdir -p /run/uwsgi/apps/
+sudo touch /run/uwsgi/apps/loginput.socket && sudo chmod 666 /run/uwsgi/apps/loginput.socket
+sudo touch /run/uwsgi/apps/rest.socket && sudo chmod 666 /run/uwsgi/apps/rest.socket
 
 # Rewrite the below line, special care to be taken
 mkdir -p /home/mozdef/envs/mozdef/bot/ && cd /home/mozdef/envs/mozdef/bot/
@@ -46,15 +42,28 @@ mkdir -p /home/mozdef/envs/mozdef/bot/ && cd /home/mozdef/envs/mozdef/bot/
 # Where to put it ? What does it do ?
 wget http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && gzip -d GeoLiteCity.dat.gz
 
-##
-## Copy various conf files
-##
+
+cd /opt/MozDef/
+sudo cp docker/conf/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+sudo cp docker/conf/settings.js /opt/MozDef/meteor/app/lib/settings.js
+sudo cp docker/conf/config.py /opt/MozDef/alerts/lib/config.py
+sudo cp docker/conf/sampleData2MozDef.conf /opt/MozDef/examples/demo/sampleData2MozDef.conf
+sudo cp docker/conf/mozdef.localloginenabled.css /opt/MozDef/meteor/public/css/mozdef.css
 
 # Install elasticsearch
-# Copy elasticsearch.yml from conf
+cd /tmp/
+curl -L https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.3.2.tar.gz | tar -C /opt -xz
+cd /opt/
+sudo cp docker/conf/elasticsearch.yml /opt/elasticsearch-1.3.2/config/
 
 # Install Kibana
-# Copy JS files as given in dockerfile
+cd /tmp/
+curl -L https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz | tar -C /opt -xz
+cd /opt/
+sudo wget https://raw.githubusercontent.com/jeffbryner/MozDef/master/examples/kibana/dashboards/alert.js
+sudo wget https://raw.githubusercontent.com/jeffbryner/MozDef/master/examples/kibana/dashboards/event.js
+sudo cp alert.js /opt/kibana/app/dashboards/alert.js
+sudo cp event.js /opt/kibana/app/dashboards/event.js
 
 # For Meteor, try to avoid symlink
 curl -L https://install.meteor.com/ | /bin/sh
@@ -68,7 +77,7 @@ cd /opt/MozDef/meteor
 #
 
 # RabbitMQ
-sudo /etc/init.d/rabbitmq-server start
+sudo service rabbitmq-server start
 
 # Elasticsearch
 sudo service elasticsearch start
