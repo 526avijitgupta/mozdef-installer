@@ -58,6 +58,7 @@ sudo cp $MOZ_PATH/docker/conf/mozdef.localloginenabled.css $MOZ_PATH/meteor/publ
 # Install Kibana
 cd /tmp/
 curl -L https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz | tar -C /opt -xz
+/bin/ln -s /opt/kibana-3.1.0 /opt/kibana
 cd /opt/
 ## Instead of downloading: How about copying from a to b
 sudo wget https://raw.githubusercontent.com/jeffbryner/MozDef/master/examples/kibana/dashboards/alert.js
@@ -67,9 +68,10 @@ sudo cp event.js /opt/kibana/app/dashboards/event.js
 
 # For Meteor, try to avoid symlink
 curl -L https://install.meteor.com/ | /bin/sh
-npm install -g meteorite
+sudo npm install -g meteorite
 ln -s /usr/bin/nodejs /usr/bin/node
 cd /opt/MozDef/meteor
+#meteor
 
 #======================================================#
 # THE BELOW SHOULD BE IN A DIFFERENT SHELL SCRIPT      #

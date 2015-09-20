@@ -50,3 +50,19 @@ sudo cp $MOZ_PATH/docker/conf/config.py $MOZ_PATH/alerts/lib/config.py
 sudo cp $MOZ_PATH/docker/conf/sampleData2MozDef.conf $MOZ_PATH/examples/demo/sampleData2MozDef.conf
 sudo cp $MOZ_PATH/docker/conf/mozdef.localloginenabled.css $MOZ_PATH/meteor/public/css/mozdef.css
 
+# Install Kibana
+cd /tmp/
+curl -L https://download.elasticsearch.org/kibana/kibana/kibana-3.1.0.tar.gz | tar -C /opt -xz
+/bin/ln -s /opt/kibana-3.1.0 /opt/kibana
+cd /opt/
+## Instead of downloading: How about copying from a to b
+sudo wget https://raw.githubusercontent.com/jeffbryner/MozDef/master/examples/kibana/dashboards/alert.js
+sudo wget https://raw.githubusercontent.com/jeffbryner/MozDef/master/examples/kibana/dashboards/event.js
+sudo cp alert.js /opt/kibana/app/dashboards/alert.js
+sudo cp event.js /opt/kibana/app/dashboards/event.js
+
+curl -L https://install.meteor.com/ | /bin/sh
+sudo npm install -g meteorite
+ln -s /usr/bin/nodejs /usr/bin/node
+cd /opt/MozDef/meteor
+#meteor
