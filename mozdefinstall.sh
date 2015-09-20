@@ -70,7 +70,7 @@ sudo cp event.js /opt/kibana/app/dashboards/event.js
 curl -L https://install.meteor.com/ | /bin/sh
 sudo npm install -g meteorite
 ln -s /usr/bin/nodejs /usr/bin/node
-cd /opt/MozDef/meteor
+cd $MOZ_PATH/meteor
 #meteor
 
 #======================================================#
@@ -113,20 +113,23 @@ meteor
 cd /opt/MozDef/alerts
 sudo celery -A celeryconfig worker --loglevel=info --beat
 
+#==========================================#
+# Eligible to come in installation script  #
+#==========================================#
+
 # Injecting sample data
-cd /opt/MozDef/examples/es-docs/
-python inject.py
+python $MOZ_PATH/examples/es-docs/inject.ph
 
 # Helper Jobs
 
 # Health/status
 ## Do look at the source code #TODO
-sh /opt/MozDef/examples/demo/healthjobs.sh
+sh $MOZ_PATH/examples/demo/healthjobs.sh
 
 # Real Time Events
 ## Do look at the source code #TODO
-sh /opt/MozDef/examples/demo/sampleevents.sh
+sh $MOZ_PATH/examples/demo/sampleevents.sh
 
 # Real Time Alerts
 ## Do look at the source code #TODO
-sh /opt/MozDef/examples/demo/syncalerts.sh
+sh $MOZ_PATH/examples/demo/syncalerts.sh
