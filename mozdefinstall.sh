@@ -95,15 +95,14 @@ sudo service nginx start
 ##
 # Loginput
 cd /opt/MozDef/loginput
-sudo /usr/local/bin/uwsgi --socket /run/uwsgi/apps/loginput.socket --wsgi-file index.py --buffer-size 32768 --master --listen 100 --uid root --pp /opt/MozDef/loginput --chmod-socket --logto /var/log/mozdef/uwsgi.loginput.log
+sudo /usr/local/bin/uwsgi --socket /run/uwsgi/apps/loginput.socket --wsgi-file $MOZ_PATH/loginput/index.py --buffer-size 32768 --master --listen 100 --uid root --pp /opt/MozDef/loginput --chmod-socket --logto /var/log/mozdef/uwsgi.loginput.log -H $PATH_TO_VENV
 
 # Rest
 cd /opt/MozDef/rest
-sudo /usr/local/bin/uwsgi --socket /run/uwsgi/apps/rest.socket --wsgi-file index.py --buffer-size 32768 --master --listen 100 --uid root --pp /opt/MozDef/rest --chmod-socket --logto /var/log/mozdef/uwsgi.rest.log
-
+sudo /usr/local/bin/uwsgi --socket /run/uwsgi/apps/rest.socket --wsgi-file $MOZ_PATH/rest/index.py --buffer-size 32768 --master --listen 100 --uid root --pp /opt/MozDef/rest --chmod-socket --logto /var/log/mozdef/uwsgi.rest.log -H $PATH_TO_VENV
 # ES Worker
 cd /opt/MozDef/mq
-sudo /usr/local/bin/uwsgi --socket /run/uwsgi/apps/esworker.socket --mule=esworker.py --mule=esworker.py --buffer-size 32768 --master --listen 100 --uid root --pp /opt/MozDef/mq --stats 127.0.0.1:9192 --logto /var/log/mozdef/uwsgi.esworker.log --master-fifo /run/uwsgi/apps/esworker.fifo
+sudo /usr/local/bin/uwsgi --socket /run/uwsgi/apps/esworker.socket --mule=esworker.py --mule=esworker.py --buffer-size 32768 --master --listen 100 --uid root --pp /opt/MozDef/mq --stats 127.0.0.1:9192 --logto /var/log/mozdef/uwsgi.esworker.log --master-fifo /run/uwsgi/apps/esworker.fifo -H $PATH_TO_VENV
 
 # Meteor
 cd /opt/MozDef/meteor
