@@ -52,6 +52,7 @@ sudo cp $MOZ_PATH/docker/conf/mozdef.localloginenabled.css $MOZ_PATH/meteor/publ
 
 # Install elasticsearch
 # Instead of copying conf, lets see if its needed
+# elasticsearch.yml is to be copied or edited manually, how about adding echo "" >> elasticsearch.yml
 # sudo cp docker/conf/elasticsearch.yml /opt/elasticsearch-1.3.2/config/
 # ElasticSearch to be installed by a different shell script
 
@@ -117,7 +118,7 @@ sudo celery -A celeryconfig worker --loglevel=info --beat
 #==========================================#
 
 # Injecting sample data
-python $MOZ_PATH/examples/es-docs/inject.ph
+python $MOZ_PATH/examples/es-docs/inject.py
 
 # Helper Jobs
 
