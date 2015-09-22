@@ -3,3 +3,4 @@
 ## Steps
 1. `make init`
 2. `source install_req.sh`
+3. `make start`
